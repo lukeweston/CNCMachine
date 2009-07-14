@@ -1,0 +1,96 @@
+
+In case you haven't seen it, Damien has got many photos and some documentation
+regarding his CNC machine here:
+
+http://www.ph.unimelb.edu.au/~dpgeorge/cnc/
+
+That's very handy, especially if you didn't make it to the weekend's session to
+see the machine in action.
+
+Damien's design employs an ATmega324P as the main microcontroller.
+I would propose building our machine using an ATmega644P as the main
+microcontroller, for no reason other than the simple fact that I already have
+two of them sitting right in front of me as I type this.
+
+The ATMega644P has 64 k of memory compared to 32 k on the ATmega324, however, in
+every other respect they are identical, pin-compatible devices. The devices I
+have stock of are 40-pin DIP through-hole packages, the same package as used on
+Damien's controller board.
+
+Damien's original design incorporates a CP2102 USB-to-UART bridge IC for the USB
+interface into the microcontroller. In case you haven't heard of it, the CP2102
+chip is essentially identical to the USB-to-UART chips manufactured by FTDI and
+used, for example, on Arduino boards.
+
+On our build, however, I propose that we replace the CP2102 chip with a FTDI
+FT232RL IC.
+
+The CP2102 is only available in a QFN-28 package, which is a leadless chip with
+seven pads on each side on the bottom of the chip, on a chip which is 5 mm wide
+on each side. It would be almost impossible for a hobbyist to fabricate.
+The FT232RL is still a fairly compact surface mount device, but it is far, far
+easier to solder up compared to the former device.
+
+The FT232RL devices seems to have the same functionality that we need as the
+CP2102 device, but it clso costs less, with the FT232RL (Digi-Key 768-1007-2-ND)
+costing USD $2.65 and the CP2102 (Digi-Key 336-1160-ND) costing USD $3.98.
+
+Both the CP2102 and the FTDI require their virtual com port (VCP) drivers to be
+installed on the host PC. This isn't really an advantage or a disadvantage
+either way, since the drivers are readily available in either case.
+
+Then again, anybody who has ever used an Arduino, for example, knows that they
+certainly already have the FTDI drivers installed and functioning on their
+system.
+
+As far as any other hardware, software or firmware design choices or setup are
+concerned, there are absolutely no differences between these two devices, since
+they both do exactly the same thing.
+
+Neither of these chips require any external components, except for the USB
+connector and a couple of power supply decoupling capacitors, so there is no
+advantage or disadvantage imposed either way in that regard.
+
+Damien has used the Allegro A3977 stepper motor driver IC; this IC looks like a
+pretty good device, and it's what we know is proven in the existing design, so
+I see no reason to make any hardware changes for this part of the design;
+although it would be nice to have the schematic for this available, if only for
+documentation purposes. 
+
+The A3977 is available, in 44-pin PLCC package, as Digi-Key 620-1146-1-ND, for
+USD $8.31 in single quantities. 
+
+The front panel of our electronics box will incorporate a power indicator
+light, (or at least it should), but this power indicator could either be a
+240 VAC neon indicator lamp, or a LED connected to the low voltage DC supply rail.
+
+The front panel on Damien's machine includes a stepper motor lockout switch
+which disconnects the 24 V rail from the stepper motor controller boards,
+preventing the CNC machine from moving. I assume we will keep this switch in
+our design, there seems to be no reason to change it or get rid of it, so it
+might be a good idea to have both an indicator light (a LED) on the 24 V rail
+so you can see when the 24 V rail is turned on, as well as a neon indicator
+lamp connected to the 240 VAC supply.
+
+I don't know for sure, but I assume that the indicator LED on Damien's machine
+is just connected to the 24 V rail or something like that. It would be nice to
+incorporate a 240 VAC power indicator as well.
+
+On the back panel of the machine we have a 240 VAC input in the form of an
+IEC socket, plus a switch and fuse for the 240 VAC input. I think it would
+be nice to use a Jaycar PP-4003 IEC socket module, which incorporates the
+IEC socket, the mains switch, and the fuse into one integrated module,
+which is nice and neat, requires less cutouts in the panel, and less
+wiring.
+
+
+
+
+
+
+
+
+
+
+
+
