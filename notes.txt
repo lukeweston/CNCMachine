@@ -219,21 +219,24 @@ This seems like a more elegant solution. We don't have those jiffy boxes mounted
 have to cut off the tool cable as discussed above, and only one power supply socket is required for the whole
 machine, not two.
 
-Because I'm assuming that we won't cut off the tool's power cable, there is plenty of extra length in the cable
-to make this practical when the electronics box is sitting next to the CNC machine. You might think of it as a disadvantage that you have to reach over to the electronics box to turn off the switch prior to changing the
-tool in the CNC machine, but I don't think this is a big deal. It would be good to use an illuminated switch
-(eg. Jaycar SK-0995) for this switch, because that way you can see at a glance if it is turned on, and you don't
-need to mount and wire up a separate indicator lamp.
+Because I'm assuming that we won't cut off the tool's power cable, there is plenty of extra length in the
+cable to make this practical when the electronics box is sitting next to the CNC machine. You might think
+of it as a disadvantage that you have to reach over to the electronics box to turn off the switch prior
+to changing the tool in the CNC machine, but I don't think this is a big deal. It would be good to use an
+illuminated switch (eg. Jaycar SK-0995) for this switch, because that way you can see at a glance if it
+is turned on, and you don't need to mount and wire up a separate indicator lamp.
 
 The front panel of the CNC machine doesn't need to incorporate a main power switch, assuming that we use the IEC
 socket module which has the integrated switch. (It could be argued that this is too inconvenient to reach on the
 back panel, and the power switch should be on the front. However, you're really not going to be turning on and
 off the machine all the time.)
 
-The front panel will incorporate a power indicator light, (or at least it should), but this power indicator could either be a 240 VAC neon indicator lamp, or a LED connected to a low voltage DC supply rail. I'm not sure if there
-is any particular preference to go either way with this, or any real pros and cons.
+The front panel will incorporate a power indicator light, (or at least it should), but this power
+indicator could either be a 240 VAC neon indicator lamp, or a LED connected to a low voltage DC supply
+rail. I'm not sure if there is any particular preference to go either way with this, or any real pros and cons.
 
 Perhaps one option might be to include the 240VAC main power switch on the front panel instead of the IEC socket
-with integrated switch, and use an illuminated switch, that way you've got power switch and power indicator lamp integrated into one, which is nice.
+with integrated switch, and use an illuminated switch, that way you've got power switch and power indicator
+lamp integrated into one, which is nice.
 
 =====================================================================================================================
