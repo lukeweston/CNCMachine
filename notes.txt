@@ -1,15 +1,17 @@
-
 =======================
  CNC Milling Machine
 =======================
 
-In case you haven't seen it, Damien has got many photos and some documentation
+In case you haven't seen it, Damien has got some photos and documentation
 regarding his CNC machine here:
 
 http://www.ph.unimelb.edu.au/~dpgeorge/cnc/
 
-That's very handy, especially if you didn't make it to the weekend's session to
+That's handy, especially if you didn't make it to the previous weekend session to
 see the machine in action.
+
+Also, there are the plans in the Google Docs document; let someone in the CCHS group know if you'd like
+to have access to those but don't already.
 
 ============
  Mechanical
@@ -21,12 +23,16 @@ on all kinds of engineering projects of this kind.
 
 When tapping holes in aluminium, a heavy lubricating oil isn't needed. A little bit
 of kerosene works well, or a similar light lubricating spray such as WD-40 or RP-7
-can be used, which is convenient to apply. A little bit of similar lubricant also
-doesn't hurt when hacksawing thick pieces of aluminium, either.
+can be used, which is convenient to apply in aerosol form. A little bit of similar
+lubricant also doesn't hurt when hacksawing thick pieces of aluminium, either.
 
 I have taps and dies and tap wrenches, which I will bring around to Andy's at some
 point, presumably at the next weekend meeting if it looks like there's consensus
 that machine fabrication will commence at that time.
+
+We should see if anyone in the group has got a drill press (a relatively small drill
+press that can practically be moved) that we can borrow and temporarily move over to
+Andy's garage or some other location where we will be building the machine.
 
 =============
  Electronics
@@ -36,6 +42,12 @@ There are six PCBs in Damien's machine: three stepper motor controller boards, t
 main board containing the microcontroller, the USB UART board, and another simple
 board containing a relay and connectors for power supply distribution to the other
 boards.
+
+For the sake of documentation, though, and so that we've got a complete set of plans and documents that we can share with the world so that others could reproduce our machine if they want to, though, I would like to have the schematics available (and PCB fabrication artwork, too) for these boards. I'm also just personally curious to check out the schematics, since I like to be able to understand how every little aspect of the machine we're building is designed and how it works. It would be good if Damien could share with us some of the schematics for the electronics; assuming that they exist outside of Damien's head.
+
+If you refer to GitHub --> /lukeweston/CNCMachine/microcontroller-damien-original.png you will find the schematic for the microcontroller board exactly as it is in Damien's CNC machine. (Yes, I did patiently reverse engineer this from the photos of the board on Damien's webpage.)
+
+The corresponding EAGLE schematic and board layout files can also be obtained from this GitHub repository, with the same filename but with the appropriate .sch and .brd filename extensions. (The PCB layout isn't 100% identical to Damien's original, but it is functionally equivalent, physically very similar, and it is the closest that I could be bothered reverse engineering it.)
 
 Damien's design employs an ATmega324P as the main microcontroller.
 I would propose building our machine using an ATmega644P as the main
@@ -51,16 +63,86 @@ as used on Damien's controller board.
 Here's Atmel's ATMega164/324/644 page with the datasheet and documentation:
 http://www.atmel.com/dyn/products/product_card.asp?PN=ATmega164P
 
+Damien's original design incorporates a CP2102 USB-to-UART bridge IC for the USB
+interface into the microcontroller. In case you haven't heard of it, the CP2102
+chip is essentially identical to the USB-to-UART chips manufactured by FTDI and
+used, for example, on Arduino boards.
+
+Here's the CP2102 datasheet:
+https://www.silabs.com/Support%20Documents/TechnicalDocs/cp2102.pdf
+
+If you look at CP2102-USB-sch.png (in the Git repository) here's an example schematic
+for the USB UART board. This one isn't identical to Damien's, I redesigned this one from
+scratch since I couldn't be bothered reverse-engineering Damien's, and he doesn't have any
+good top-side PCB photos posted anyway :) (Again, the EAGLE files are there too if you want them.)
+
+This one is just a simple board designed based on the CP2102 datasheet, with the CP2102 powered by
+the device 5V rail, not drawing current from the USB host. In Damien's machine, there seem to be a total
+of four wires (plus two for +5V and ground) connected between the microcontroller and CP2102; but I'm not sure
+why; I guess they're a couple of extra UART lines. I'd like to ask Damien what they're for. I have, at this stage,
+left them off this schematic, since I don't know what they're for, and Tx and Rx should be all that is needed to
+be wired up between the USB UART bridge and the microcontroller UART. 
+
+The CP2102 is only available in a QFN-28 package, which is a leadless chip with
+seven pads on each side on the bottom of the chip, on a chip which is 5 mm wide
+on each side. It would be almost impossible for a hobbyist to fabricate, and indeed,
+Damien has shown on his web page how he was unable to practically get the device
+soldered into place on the PCB.
+
+To put it in a perhaps more familiar context, it's about the same size as the ADXL330
+accelerometer chips, but it has seven pads on each side, compared to four on the
+ADXL330. It is obviously a soldering nightmare.
+
+One possible way to address this problem might potentially be to use a FT232RL chip
+(the same USB UART chip from FTDI used, for example, on Arduino boards) in the machine.
+The FT232RL is still a fairly compact surface mount device, but it is easier to solder
+up compared to the former device.
+
+Here's the FTDI FT232R datasheet for reference:
+http://www.ftdichip.com/Documents/DataSheets/DS_FT232R_V204.pdf
+
+Perhaps fabricating boards with these kinds of extra-small, high-density SMD chips
+will provide a bit of a driving force for the group to develop the capability to work
+with advanced SMD manufacturing techniques; such as solder paste and reflow soldering.
+Maybe that would be a good area to develop skills in, if the group as a whole is interested
+in progressing down that path.
+
+As far as any other hardware, software or firmware design choices or setup are concerned,
+there are absolutely no differences between these two devices, since they both do exactly
+the same thing. They require different drivers, but both devices are fully operable with
+Linux and Mac in terms of their drivers, and there are no driver-related hassles.
+
+What do you guys think? Would you consider changing the USB chip, or not bother?
+
+There's also another option - I know Michael will like this option - and that is to get a CP2102 chip (or FTDI) interface module pre-assembled from SparkFun :) :P
+
+Damien has used the Allegro A3977 stepper motor driver IC; this IC looks like a
+pretty good device, and it's what we know is proven in the existing design, so
+I see no reason to make any hardware changes for this part of the design.
+
+(Maybe that's just because I haven't seen the schematics for those drivers,
+and if I did, I might find something I'd like to change? :P But never mind.)
+
+I don't see any reason why we can't just go ahead and fabricate three more PCBs
+for the three stepper motor controller boards using Damien's CNC machine.
+
+I'm happy to populate the boards and do the soldering.
+
+The A3977 IC can be purchased from Digi-Key (620-1146-1-ND), costing USD$8.31 ea.
+
+(That's a different price to what Damien said, maybe they put the price up since
+Damien looked at it, or maybe I'm looking at the wrong chip, but I don't think so.)
+
 There are only a few electronic components which are *not* just easily available
 from the local Jaycar store and need to be ordered from a more specialised overseas
-supplier.
+supplier. They are the stepper motor controller ICs, the USB UART bridge IC, and the 20x4 LCD
+module.
 
-They are the stepper motor controller ICs, the USB UART bridge IC, and the 20x4 LCD
-module. Damien's docs mention sourcing the LCD module from Futurelec, but if you're
-going to get the stepper motor controller ICs from Digi-Key you might as well order
-it all from Digi-Key in one hit, and save on shipping costs.
+Damien's docs mention sourcing the LCD module from Futurelec, but if you're going to get
+the stepper motor controller ICs from Digi-Key you might as well order it all from Digi-Key
+in one hit, and save on shipping costs.
 
-At this point, I would propose ordering the following from Digi-Key:
+At this point, I would tentatively propose ordering the following from Digi-Key:
 
 	1 x 20x4 character LCD module, 73-1251-ND, USD$27.91 ea.
 	4 x A3977 stepper motor controller IC, 620-1146-1-ND, USD$8.31 ea.
@@ -70,101 +152,43 @@ In this proposed order, note that I have included a (one) spare for each of the 
 
 Before finalising the order, does anyone have a preferred colour or style for the
 LCD display? The white backlight one sounds like it will look good, it will look
-better than boring old green, and it was relatively cheap.
+better than boring old green, and it was relatively cheap. 
 
-Damien's original design incorporates a CP2102 USB-to-UART bridge IC for the USB
-interface into the microcontroller. In case you haven't heard of it, the CP2102
-chip is essentially identical to the USB-to-UART chips manufactured by FTDI and
-used, for example, on Arduino boards.
+I think that the power supply distribution PCB in Damien's machine can be eliminated entirely, it's so simple that it's really not needed at all.
 
-The CP2102 is only available in a QFN-28 package, which is a leadless chip with
-seven pads on each side on the bottom of the chip, on a chip which is 5 mm wide
-on each side. It would be almost impossible for a hobbyist to fabricate, and indeed,
-Damien has shown on his web page how he was unable to practically get the device
-soldered into place on the PCB.
+It's entirely practical to make a slight redesign to the main microcontroller PCB so that the 7805 regulator is assimilated onto the main board, along with an input connector for the +24V rail from the SMPS (switched-mode power supply) output. Three connectors to take the +5V and +24V rails out to the three A3977 boards can also easily be included on this board.
 
-One possible way to address this problem might potentially be to use a FT232RL chip
-(the same USB UART chip from FTDI used, for example, on Arduino boards) in the
-machine. The FT232RL is still a fairly compact surface mount device, but it is far,
-far easier to solder up compared to the former device.
+If you look at microcontroller-board.png , you see what I would tentatively propose as a revised, tweaked version of the main microcontroller PCB.
 
-As far as any other hardware, software or firmware design choices or setup are
-concerned, there are absolutely no differences between these two devices, since
-they both do exactly the same thing.
+I have removed the joystick connector, added a standard AVR ICSP header using a pinout compatible with standard AVR ICSP cables, added the 7805 regulator onto the board along with connectors to distribute power out to the A3977
+boards, changed the LCD pin assignment slightly to make it more intuitive, and added the interfaces to the drill control
+relay, the emergency cutoff kill switch, and the inputs from the photointerrupters for the mechanical position sensing.
 
-What do you guys think? Would you consider changing the USB chip, or not bother?
+There are enough pins on the microcontroller to put all this on board one microcontroller with no hassles; I don't think there is any real need to have a second auxillary microcontroller hanging off the first one; it can all be integrated, since we're getting rid of the joystick.
 
-Damien has used the Allegro A3977 stepper motor driver IC; this IC looks like a
-pretty good device, and it's what we know is proven in the existing design, so
-I see no reason to make any hardware changes for this part of the design.
+I've also integrated the drill control relay onto the board, with the board pads designed for a Jaycar SY-4088 solid-state triac relay. Aforementioned solid-state relay is another one of those components that I thought might be a nice design choice because I already have one of them laying around to use.
 
-(Maybe that's just because I haven't seen the schematics for those drivers, and if I
-did, I might find something I'd like to change? :P But never mind.)
+This device is rated for 2 A (RMS) @ 240VAC, or 480 W. Given that the Proxxon tool is rated for 100 W, that's perfectly sufficient. That safety factor should be fine, even if you consider that that's probably the total design power rating for driving a resistive load, and the Proxxon motor is probably a bit of an inductive load.
 
-I don't see any reason why we can't just go ahead and fabricate three more PCBs
-for the three stepper motor controller boards using Damien's CNC machine.
+On the back panel of the machine we have a 240 VAC input in the form of an IEC socket, plus a switch and fuse for the 240 VAC input. I think it might be nice to use a Jaycar PP-4003 IEC socket module, which incorporates the IEC socket, the mains switch, and the fuse into one integrated module, which is nice and neat, requires less cutouts in the panel, and less wiring. Furthermore, I already have a spare one of these laying around :)
 
-I'm happy to populate the boards and do the soldering.
+Another small thing I'd like to change would be to have the switched 240VAC output from the drill control relay to be connected to a female 240VAC three-pin socket, which the original mains cable on the Proxxon tool can be plugged into, meaning that the tool's original power cable is not modified or severed.
 
-The A3977 IC can be purchased from Digi-Key (620-1146-1-ND), costing USD$8.31 ea.
-(That's a different price to what Damien said, maybe they put the price up since
-Damien looked at it, or maybe I'm looking at the wrong chip, but I don't think so.)
+This means that the Proxxon tool can easily be removed from the machine if you wish to use it for some odd job separate from the milling machine, it can be swapped out for a different tool, or it can be returned for a warranty claim if it breaks. The only possible disadvantage is that there might be a little bit of excess cable length laying around, but it can be coiled up and held out of the way with a cable tie.
 
-It would be nice to have the schematics available for all the electronics in the
-machine for documentation purposes; for example so that other groups could reproduce
-their own machine if they wanted to.
+I think we can integrate the relay to control the drill into the main electronics box, along with the manual cutoff switch which isolates the 240VAC before that relay for safety when you're changing the tool. We can integrate a standard 3-pin mains socket (Jaycar PS-4094) into the main electronics box which is connected to the output from the relay, and the tool cable simply plugs into this.
 
-I think that the power supply distribution PCB in Damien's machine can be eliminated
-entirely, it's so simple that it's really not needed at all. It's entirely practical
-to make a slight redesign to the main microcontroller PCB so that the 7805 regulator
-is assimilated onto the main board, along with an input connector for the +24V
-rail from the SMPS (switched-mode power supply) output. Three connectors to take
-the +5V and +24V rails out to the three A3977 boards can also easily be included on
-this board.
+This seems like a more elegant solution. We don't have those jiffy boxes mounted on the CNC machine, we don't have to cut off the tool cable as discussed above, and only one power supply socket is required for the whole machine, not two.
 
-Another small thing I'd like to change would be to have the switched 240VAC output
-from the solid-state AC relay to be connected to a female 240VAC three-pin socket,
-which the original mains cable on the Proxxon tool can be plugged into, meaning that
-the tool's original power cable is not modified or severed.
+Because I'm assuming that we won't cut off the tool's power cable, there is plenty of extra length in the cable to make this practical when the electronics box is sitting next to the CNC machine. You might think of it as a disadvantage that you have to reach over to the electronics box to turn off the switch prior to changing the tool in the CNC machine,
+but I don't think this is a big deal. It would be good to use an illuminated switch (eg. Jaycar SK-0995) for this switch, because that way you can see at a glance if it is turned on, and you don't need to mount and wire up a seperate
+indicator lamp.
 
-This means that the Proxxon tool can easily be removed from the machine if you wish
-to use it for some odd job seperate from the milling machine, it can be swapped out
-for a different tool, and it can be returned for a warranty claim if it breaks.
+The front panel of the CNC machine doesn't need to incorporate a main power switch, assuming that we use the IEC socket
+module which has the integrated switch. (It could be argued that this is too inconvenient to reach on the back panel, and the power switch should be on the front. However, you're really not going to be turning on and off the machine all the time.)
 
-The only possible disadvantage is that there might be a little bit of excess cable
-length laying around, but it can be coiled up and held out of the way with a cable
-tie.
+The front panel will incorporate a power indicator light, (or at least it should), but this power indicator could either be a 240 VAC neon indicator lamp, or a LED connected to a low voltage DC supply rail. I'm not sure if there is any particular preference to go either way with this, or any real pros and cons.
 
-On the back panel of the machine we have a 240 VAC input in the form of an
-IEC socket, plus a switch and fuse for the 240 VAC input. I think it would
-be nice to use a Jaycar PP-4003 IEC socket module, which incorporates the
-IEC socket, the mains switch, and the fuse into one integrated module,
-which is nice and neat, requires less cutouts in the panel, and less
-wiring. Furthermore, I already have a spare one of these laying around :)
+Perhaps one option might be to include the 240VAC main power switch on the front panel instead of the IEC socket with integrated switch, and use an illuminated switch, that way you've got power switch and power indicator lamp integrated into one, which is nice.
 
-
-
-
-
-
-
-
-
-
-
-The front panel of our electronics box will incorporate a power indicator
-light, (or at least it should), but this power indicator could either be a
-240 VAC neon indicator lamp, or a LED connected to the low voltage DC supply rail.
-
-The front panel on Damien's machine includes a stepper motor lockout switch
-which disconnects the 24 V rail from the stepper motor controller boards,
-preventing the CNC machine from moving. I assume we will keep this switch in
-our design, there seems to be no reason to change it or get rid of it, so it
-might be a good idea to have both an indicator light (a LED) on the 24 V rail
-so you can see when the 24 V rail is turned on, as well as a neon indicator
-lamp connected to the 240 VAC supply.
-
-I don't know for sure, but I assume that the indicator LED on Damien's machine
-is just connected to the 24 V rail or something like that. It would be nice to
-incorporate a 240 VAC power indicator as well.
-
+=====================================================================================================================
