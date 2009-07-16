@@ -91,7 +91,8 @@ This one is just a simple board designed based on the CP2102 datasheet, with the
 the device 5V rail, not drawing current from the USB host. In Damien's machine, there seem to be a total
 of four wires (plus two for +5V and ground) connected between the microcontroller and CP2102; but I'm not
 sure why; I guess they're a couple of extra UART lines. I'd like to ask Damien what they're for.
-I have, at this stage, left them off this schematic, since I don't know what they're for, and Tx and Rx should be all that is needed to be wired up between the USB UART bridge and the microcontroller UART. 
+I have, at this stage, left them off this schematic, since I don't know what they're for, and Tx and Rx
+should be all that is needed to be wired up between the USB UART bridge and the microcontroller UART. 
 
 The CP2102 is only available in a QFN-28 package, which is a leadless chip with
 seven pads on each side on the bottom of the chip, on a chip which is 5 mm wide
@@ -186,8 +187,9 @@ There are enough pins on the microcontroller to put all this on board one microc
 I don't think there is any real need to have a second auxillary microcontroller hanging off the first one;
 it can all be integrated, since we're getting rid of the joystick.
 
-I've also integrated the drill control relay onto the board, with the board pads designed for a Jaycar SY-4088 solid-state triac relay. Aforementioned solid-state relay is another one of those components that I thought
-might be a nice design choice because I already have one of them laying around to use.
+I've also integrated the drill control relay onto the board, with the board pads designed for a Jaycar
+SY-4088 solid-state triac relay. Aforementioned solid-state relay is another one of those components that
+I thought might be a nice design choice because I already have one of them laying around to use.
 
 This device is rated for 2 A (RMS) @ 240VAC, or 480 W. Given that the Proxxon tool is rated for 100 W,
 that's perfectly sufficient. That safety factor should be fine, even if you consider that that's probably
@@ -196,33 +198,42 @@ inductive load.
 
 On the back panel of the machine we have a 240 VAC input in the form of an IEC socket, plus a switch and fuse
 for the 240 VAC input. I think it might be nice to use a Jaycar PP-4003 IEC socket module, which incorporates
-the IEC socket, the mains switch, and the fuse into one integrated module, which is nice and neat, requires less cutouts in the panel, and less wiring. Furthermore, I already have a spare one of these laying around :)
+the IEC socket, the mains switch, and the fuse into one integrated module, which is nice and neat, requires
+less cutouts in the panel, and less wiring. Furthermore, I already have a spare one of these laying around :)
 
-Another small thing I'd like to change would be to have the switched 240VAC output from the drill control relay to
-be connected to a female 240VAC three-pin socket, which the original mains cable on the Proxxon tool can be plugged into, meaning that the tool's original power cable is not modified or severed.
+Another small thing I'd like to change would be to have the switched 240VAC output from the drill control relay
+to be connected to a female 240VAC three-pin socket, which the original mains cable on the Proxxon tool can be
+plugged into, meaning that the tool's original power cable is not modified or severed.
 
 This means that the Proxxon tool can easily be removed from the machine if you wish to use it for some odd job
-separate from the milling machine, it can be swapped out for a different tool, or it can be returned for a warranty claim if it breaks. The only possible disadvantage is that there might be a little bit of excess cable length laying around, but it can be coiled up and held out of the way with a cable tie.
+separate from the milling machine, it can be swapped out for a different tool, or it can be returned for a
+warranty claim if it breaks. The only possible disadvantage is that there might be a little bit of excess cable
+length laying around, but it can be coiled up and held out of the way with a cable tie.
 
-I think we can integrate the relay to control the drill into the main electronics box, along with the manual cutoff switch which isolates the 240VAC before that relay for safety when you're changing the tool. We can integrate a standard 3-pin mains socket (Jaycar PS-4094) into the main electronics box which is connected to the output from the relay, and the tool cable simply plugs into this.
+I think we can integrate the relay to control the drill into the main electronics box, along with the manual
+cutoff switch which isolates the 240VAC before that relay for safety when you're changing the tool.
+We can integrate a standard 3-pin mains socket (Jaycar PS-4094) into the main electronics box which
+is connected to the output from the relay, and the tool cable simply plugs into this.
 
-This seems like a more elegant solution. We don't have those jiffy boxes mounted on the CNC machine, we don't have
-to cut off the tool cable as discussed above, and only one power supply socket is required for the whole machine,
-not two.
+This seems like a more elegant solution. We don't have those jiffy boxes mounted on the CNC machine, we don't
+have to cut off the tool cable as discussed above, and only one power supply socket is required for the whole
+machine, not two.
 
-Because I'm assuming that we won't cut off the tool's power cable, there is plenty of extra length in the cable to
-make this practical when the electronics box is sitting next to the CNC machine. You might think of it as a disadvantage that you have to reach over to the electronics box to turn off the switch prior to changing the tool
-in the CNC machine, but I don't think this is a big deal. It would be good to use an illuminated switch
-(eg. Jaycar SK-0995) for this switch, because that way you can see at a glance if it is turned on, and you don't need to mount and wire up a separate indicator lamp.
+Because I'm assuming that we won't cut off the tool's power cable, there is plenty of extra length in the cable
+to make this practical when the electronics box is sitting next to the CNC machine. You might think of it as a disadvantage that you have to reach over to the electronics box to turn off the switch prior to changing the
+tool in the CNC machine, but I don't think this is a big deal. It would be good to use an illuminated switch
+(eg. Jaycar SK-0995) for this switch, because that way you can see at a glance if it is turned on, and you don't
+need to mount and wire up a separate indicator lamp.
 
 The front panel of the CNC machine doesn't need to incorporate a main power switch, assuming that we use the IEC
 socket module which has the integrated switch. (It could be argued that this is too inconvenient to reach on the
-back panel, and the power switch should be on the front. However, you're really not going to be turning on and off
-the machine all the time.)
+back panel, and the power switch should be on the front. However, you're really not going to be turning on and
+off the machine all the time.)
 
 The front panel will incorporate a power indicator light, (or at least it should), but this power indicator could either be a 240 VAC neon indicator lamp, or a LED connected to a low voltage DC supply rail. I'm not sure if there
 is any particular preference to go either way with this, or any real pros and cons.
 
-Perhaps one option might be to include the 240VAC main power switch on the front panel instead of the IEC socket with integrated switch, and use an illuminated switch, that way you've got power switch and power indicator lamp integrated into one, which is nice.
+Perhaps one option might be to include the 240VAC main power switch on the front panel instead of the IEC socket
+with integrated switch, and use an illuminated switch, that way you've got power switch and power indicator lamp integrated into one, which is nice.
 
 =====================================================================================================================
